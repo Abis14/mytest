@@ -150,9 +150,8 @@ Log.d("okkk","kk")
                                 override fun onDataChange(snapshot: DataSnapshot) {
 //                                    val data2 =
 //                                        snapshot.getValue(listbasicinfo::class.java)
-                                    if (snapshot.hasChildren()) {
-                                        for (items in snapshot.child("listdetails").children) {
-                                            val das = items.getValue(listdetails::class.java)
+
+                                            val das = snapshot.getValue(listdetails::class.java)
 
 Log.d("list",das?.listdetails.toString())
 
@@ -181,8 +180,8 @@ Log.d("list",das?.listdetails.toString())
                                                     false
                                                 )
                                         }
-                                    }
-                                }
+
+
 
                                 override fun onCancelled(error: DatabaseError) {
                                     TODO("Not yet implemented")
