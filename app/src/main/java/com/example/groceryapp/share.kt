@@ -25,6 +25,7 @@ class share : AppCompatActivity() {
     lateinit var button: Button
     var link: String = ""
     var title = ""
+    var isshown:Boolean=false
     var email: ArrayList<String> = ArrayList()
     var dp: ArrayList<Any> = ArrayList()
     var uid: ArrayList<String> = ArrayList()
@@ -48,14 +49,15 @@ class share : AppCompatActivity() {
                 if (it.isSuccessful) {
                     it.result.children.forEach { children ->
                         id = children.key.toString()
+                        Log.d("link",id)
+                        Loadfragment()
+                        gettingmemberlist()
                     }
 
                 }
 
 
             }
-        Loadfragment()
-        gettingmemberlist()
 
 
 //            val mydata = "hi please bring these grocery ".toString()
@@ -91,6 +93,7 @@ class share : AppCompatActivity() {
     fun Loadfragment() {
         val myuri = createshareuri(id)
         link = dynamiclink(myuri).toString()
+
         val fragmenttransaction = fragmentmanager.beginTransaction()
         val linkfragment = linkfragment()
         val bundle = Bundle()

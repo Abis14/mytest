@@ -39,25 +39,8 @@
             android:exported="false" />
         <activity
             android:name=".Showlist"
-            android:exported="true">
-            <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
+            android:exported="false">
 
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <!-- the host should contain your domain. The pattern should be same as it's mentioned without any special char -->
-
-                <data
-                    android:host="abis.page.link"
-                    android:pathPrefix="/grocerylist"
-                    android:scheme="https" />
-            </intent-filter>
 
 
         </activity>
@@ -76,6 +59,19 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <!-- the host should contain your domain. The pattern should be same as it's mentioned without any special char -->
+
+                <data
+                    android:host="abis.page.link"
+                    android:pathPrefix="/grocerylist"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
 

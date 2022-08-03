@@ -25,6 +25,7 @@ class grocerylist : AppCompatActivity(),grocerylistparentadapter.Adaptercallback
     var ids: String = ""
     lateinit var img: ImageView
     lateinit var cancel: ImageView
+    lateinit var icon:ImageView
     lateinit var title: TextView
     lateinit var databaseref: DatabaseReference
     lateinit var listdetails: listbasicinfo
@@ -50,7 +51,7 @@ class grocerylist : AppCompatActivity(),grocerylistparentadapter.Adaptercallback
         img = findViewById(R.id.action)
         Assingedtome = findViewById(R.id.button6)
         Assingedtome.setOnClickListener {
-            assingedtomelist()
+            assingtomelist()
         }
 
         title = findViewById(R.id.textView12)
@@ -60,7 +61,10 @@ class grocerylist : AppCompatActivity(),grocerylistparentadapter.Adaptercallback
         val gson: Gson = Gson()
         val list = intent.getStringExtra("mydata")
         lists = list
-
+icon=findViewById(R.id.imageView8)
+        icon.setOnClickListener {
+            laodfragment()
+        }
         img.setOnClickListener {
             deleteoperation()
 
@@ -130,67 +134,70 @@ Log.d("okkk","kk")
 
     }
 
-    private fun assingedtomelist() {
+    private fun laodfragment() {
+        var gson=Gson()
+        val data=gson.toJson(listdetails)
+        val bundle=Bundle()
+        bundle.putString("share",data)
+        val icon=icondisplay()
+        icon.arguments=bundle
+        val fragmenttrans=supportFragmentManager.beginTransaction()
+        fragmenttrans.replace(R.id.showmenu,icon)
+        fragmenttrans.commit()
+    }
 
-        Log.d("title", listdetails.listdetails?.get("assinged")?.assinged.toString())
-        databaseref = FirebaseDatabase.getInstance().getReference("grocerylist")
-            .child("listbasicinfo")
-        databaseref
-            .child(ids).child("listdetails").orderByChild("assinged")
-            .equalTo("1vLdXkMdAKOGsRmnVJLEtvLuUbG2").get().addOnCompleteListener {
-                if (it.isSuccessful) {
-                    it.result.children.forEach { children ->
-                        val cid = children.key.toString()
-                        Log.d("ids", cid)
-                                               FirebaseDatabase.getInstance().getReference("grocerylist")
+    private fun assingtomelist() {
+        FirebaseDatabase.getInstance().getReference("grocerylist")
+            .child("listbasicinfo").get().addOnCompleteListener {
+                if(it.isSuccessful)
+                {
+                    it.result.children.forEach {
+                        if(it.child("title").value==listdetails.title)
+                        {
+                            it.child("listdetails").children.forEach { childed->
+                                if(childed.child("assinged").value==FirebaseAuth.getInstance().currentUser?.uid.toString())
+                                {
+                                    val mainid=it.key.toString()
+                                    FirebaseDatabase.getInstance().getReference("grocerylist").child("listbasicinfo").child(mainid).addValueEventListener(object:ValueEventListener{
+                                        override fun onDataChange(snapshot: DataSnapshot) {
+                                            val data=snapshot.getValue(listbasicinfo::class.java)
+                                            data?.listdetails?.forEach {
 
-                            .child("listbasicinfo").child(ids).child("listdetails")
-                            .child(cid)
-                            .addValueEventListener(object : ValueEventListener {
-                                override fun onDataChange(snapshot: DataSnapshot) {
-//                                    val data2 =
-//                                        snapshot.getValue(listbasicinfo::class.java)
 
-                                            val das = snapshot.getValue(listdetails::class.java)
+//            myMap[it.value.category]?.add(it.value.Itemdetails.toString())
+                                                myMap.put(it.value.category.toString(), java.util.ArrayList())
 
-Log.d("list",das?.listdetails.toString())
 
-                                            das?.listdetails?.forEach {
-                                                myMapme.put(
-                                                    it.value.category.toString(),
-                                                    java.util.ArrayList()
-                                                )
                                             }
-                                            das?.listdetails?.forEach {
-                                                myMapme.get(it.value.category.toString())
+                                            data?.listdetails?.forEach {
+
+                                                Log.d("TAG", "onCreateViewss: ${it.value.category}")
+
+                                                myMap.get(it.value.category.toString())
                                                     ?.add(it.value)
+                                                adapter= grocerylistparentadapter(myMap,data,this@grocerylist,this@grocerylist)
+                                                myMap.put("Done", java.util.ArrayList())
+                                                rey.adapter = adapter
+                                                rey.layoutManager =
+                                                    LinearLayoutManager(this@grocerylist, LinearLayoutManager.VERTICAL, false)
                                             }
-                                            adapter = grocerylistparentadapter(
-                                                myMapme,
-                                                das!!,
-                                                this@grocerylist,
-                                                this@grocerylist
-                                            )
 
-                                            rey.adapter = adapter
-                                            rey.layoutManager =
-                                                LinearLayoutManager(
-                                                    this@grocerylist,
-                                                    LinearLayoutManager.VERTICAL,
-                                                    false
-                                                )
                                         }
 
+                                        override fun onCancelled(error: DatabaseError) {
+                                            TODO("Not yet implemented")
+                                        }
 
-
-                                override fun onCancelled(error: DatabaseError) {
-                                    TODO("Not yet implemented")
+                                    })
+                                    Log.d("mainid",mainid)
                                 }
+                            }
 
-                            })
+                        }
                     }
                 }
             }
+
     }
 
 

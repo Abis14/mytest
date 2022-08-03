@@ -206,23 +206,23 @@ class Showlist : AppCompatActivity() {
 
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun handlingdynamiclink() {
-        FirebaseDynamicLinks.getInstance().getDynamicLink(intent).addOnSuccessListener {
-            if (it != null) {
-                val id = it.link?.getQueryParameter("id")
-                Log.d("ids",id.toString())
-                if(id!=null)
-                {
-
-                    val member=member(FirebaseAuth.getInstance().uid.toString(),"Editor",LocalDateTime.now().toString())
-                    FirebaseDatabase.getInstance().getReference("grocerylist").child("listbasicinfo").child(id).child("members").push().updateChildren(member.toMap()).addOnSuccessListener {
-                        Toast.makeText(this, "sucessfully added to your list", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-        }
-    }
+    //@RequiresApi(Build.VERSION_CODES.O)
+//    fun handlingdynamiclink() {
+//        FirebaseDynamicLinks.getInstance().getDynamicLink(intent).addOnSuccessListener {
+//            if (it != null) {
+//                val id = it.link?.getQueryParameter("id")
+//                Log.d("ids",id.toString())
+//                if(id!=null)
+//                {
+//
+//                    val member=member(FirebaseAuth.getInstance().uid.toString(),"Editor",LocalDateTime.now().toString())
+//                    FirebaseDatabase.getInstance().getReference("grocerylist").child("listbasicinfo").child(id).child("members").push().updateChildren(member.toMap()).addOnSuccessListener {
+//                        Toast.makeText(this, "sucessfully added to your list", Toast.LENGTH_SHORT).show()
+//                    }
+//                }
+//            }
+//        }
+//    }
 }
 
 

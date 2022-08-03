@@ -3,11 +3,13 @@ package com.example.groceryapp
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.facebook.CallbackManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -24,6 +26,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
 import java.net.URL
+import java.time.LocalDateTime
 
 
 class SIGNIN : AppCompatActivity() {
@@ -34,6 +37,7 @@ class SIGNIN : AppCompatActivity() {
     lateinit var database: FirebaseDatabase
     lateinit var dref: DatabaseReference
 
+    @RequiresApi(Build.VERSION_CODES.O)
     val getaction = registerForActivityResult(ActivityResultContracts.StartActivityForResult())
     {
         if (Req_Code ==123) {
@@ -54,6 +58,7 @@ class SIGNIN : AppCompatActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun firebaseauthwithgoogle(idToken: String?) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         auth.signInWithCredential(credential).addOnCompleteListener { task ->
@@ -93,6 +98,7 @@ val result:Intent=Intent()
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun googlesign(view: View) {
 
 
@@ -102,6 +108,7 @@ val result:Intent=Intent()
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun saveuserdata() {
 
 var exist:Int=0
@@ -157,7 +164,19 @@ var img: String? =null
             }*/
         }
 
-
+val linkid=intent.getStringExtra("id").toString()
+        if(linkid!=null) {
+            val member = member(
+                FirebaseAuth.getInstance().uid.toString(), "Editor",
+                LocalDateTime.now().toString()
+            )
+            FirebaseDatabase.getInstance().getReference("grocerylist").child("listbasicinfo")
+                .child(id).child("members").push().updateChildren(member.toMap())
+                .addOnSuccessListener {
+                    Toast.makeText(this, "sucessfully added to your list", Toast.LENGTH_SHORT)
+                        .show()
+                }
+        }
 //        }
 // name=auth.currentUser?.displayName
 //         email=auth.currentUser?.email
